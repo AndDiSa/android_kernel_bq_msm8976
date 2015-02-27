@@ -740,6 +740,7 @@ void iscsi_post_login_handler(
 	struct se_session *se_sess = sess->se_sess;
 	struct iscsi_portal_group *tpg = ISCSI_TPG_S(sess);
 	struct se_portal_group *se_tpg = &tpg->tpg_se_tpg;
+	int rc;
 
 	iscsit_inc_conn_usage_count(conn);
 
@@ -780,6 +781,9 @@ void iscsi_post_login_handler(
 			sess->sess_ops->InitiatorName);
 		spin_unlock_bh(&sess->conn_lock);
 
+		rc = iscsit_start_kthreads(conn);
+		if (rc)
+			return rc;
 		iscsi_post_login_start_timers(conn);
 		/*
 		 * Determine CPU mask to ensure connection's RX and TX kthreads
@@ -841,6 +845,10 @@ void iscsi_post_login_handler(
 	pr_debug("Incremented number of active iSCSI sessions to %u on"
 		" iSCSI Target Portal Group: %hu\n", tpg->nsessions, tpg->tpgt);
 	spin_unlock_bh(&se_tpg->session_lock);
+
+	rc = iscsit_start_kthreads(conn);
+	if (rc)
+		return rc;
 
 	iscsi_post_login_start_timers(conn);
 	/*

@@ -3990,7 +3990,6 @@ int iscsi_target_rx_thread(void *arg)
 	rc = wait_for_completion_interruptible(&conn->rx_login_comp);
 	if (rc < 0 || iscsi_target_check_conn_state(conn))
 		return 0;
-
 	if (conn->conn_transport->transport_type == ISCSI_INFINIBAND) {
 		struct completion comp;
 
