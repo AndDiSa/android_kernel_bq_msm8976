@@ -445,6 +445,7 @@ int dwc3_send_gadget_ep_cmd(struct dwc3 *dwc, unsigned ep,
 					DWC3_DEPCMD_STATUS(reg));
 			if (DWC3_DEPCMD_STATUS(reg))
 				return -EINVAL;
+<<<<<<< HEAD
 			/* SW issues START TRANSFER command to isochronous ep
 			 * with future frame interval. If future interval time
 			 * has already passed when core recieves command, core
@@ -456,6 +457,9 @@ int dwc3_send_gadget_ep_cmd(struct dwc3 *dwc, unsigned ep,
 			else
 				ret = 0;
 			break;
+=======
+			return 0;
+>>>>>>> de03d21864e7... usb: dwc3: gadget: return error if command sent to DEPCMD register fails
 		}
 
 		/*
