@@ -27,7 +27,6 @@ enum {
 #define offsetofend(TYPE, MEMBER) \
 	(offsetof(TYPE, MEMBER)	+ sizeof(((TYPE *)0)->MEMBER))
 
-#endif
 
 /**
  * offsetofend(TYPE, MEMBER)
@@ -37,3 +36,5 @@ enum {
  */
 #define offsetofend(TYPE, MEMBER) \
 	(offsetof(TYPE, MEMBER)	+ sizeof(((TYPE *)0)->MEMBER))
+
+#endif
