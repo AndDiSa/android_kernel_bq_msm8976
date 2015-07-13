@@ -526,10 +526,7 @@ int map_and_register_buf(struct msm_vidc_inst *inst, struct v4l2_buffer *b)
 				&inst->registeredbufs.list, list) {
 				if (iterator == temp) {
 					rc = buf_ref_get(inst, temp);
-					if (rc > 0) {
-						save_v4l2_buffer(b, temp);
-						rc = -EEXIST;
-					}
+					save_v4l2_buffer(b, temp);
 					break;
 				}
 			}
