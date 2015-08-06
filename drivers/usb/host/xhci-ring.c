@@ -3426,6 +3426,20 @@ int xhci_queue_bulk_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
 		return ret;
 
 	urb_priv = urb->hcpriv;
+
+	/* Deal with URB_ZERO_PACKET - need one more td/trb */
+	zero_length_needed = urb->transfer_flags & URB_ZERO_PACKET &&
+		urb_priv->length == 2;
+	if (zero_length_needed) {
+		num_trbs++;
+		xhci_dbg(xhci, "Creating zero length td.\n");
+		ret = prepare_transfer(xhci, xhci->devs[slot_id],
+				ep_index, urb->stream_id,
+				1, urb, 1, mem_flags);
+		if (ret < 0)
+			return ret;
+	}
+
 	td = urb_priv->td[0];
 
 	/*
