@@ -394,6 +394,7 @@ static irqreturn_t atmel_twi_interrupt(int irq, void *dev_id)
 	 * Receive Holding Register for the next transfer.
 	 */
 	if (irqstatus & AT91_TWI_RXRDY)
+		at91_twi_read_next_byte(dev);
 
 	/*
 	 * When a NACK condition is detected, the I2C controller sets the NACK,
@@ -436,8 +437,6 @@ static irqreturn_t atmel_twi_interrupt(int irq, void *dev_id)
 	if (irqstatus & (AT91_TWI_TXCOMP | AT91_TWI_NACK)) {
 		at91_disable_twi_interrupts(dev);
 		complete(&dev->cmd_complete);
-	} else if (irqstatus & AT91_TWI_RXRDY) {
-		at91_twi_read_next_byte(dev);
 	} else if (irqstatus & AT91_TWI_TXRDY) {
 		at91_twi_write_next_byte(dev);
 	}
@@ -452,7 +451,6 @@ static int at91_do_twi_transfer(struct at91_twi_dev *dev)
 {
 	int ret;
 	bool has_unre_flag = dev->pdata->has_unre_flag;
-	unsigned sr;
 
 	/*
 	 * WARNING: the TXCOMP bit in the Status Register is NOT a clear on
@@ -489,18 +487,13 @@ static int at91_do_twi_transfer(struct at91_twi_dev *dev)
 	dev->transfer_status = 0;
 
 	/* Clear pending interrupts, such as NACK. */
-	sr = at91_twi_read(dev, AT91_TWI_SR);
+	at91_twi_read(dev, AT91_TWI_SR);
 
 	if (!dev->buf_len) {
 		at91_twi_write(dev, AT91_TWI_CR, AT91_TWI_QUICK);
 		at91_twi_write(dev, AT91_TWI_IER, AT91_TWI_TXCOMP);
 	} else if (dev->msg->flags & I2C_M_RD) {
 		unsigned start_flags = AT91_TWI_START;
-
-		if (sr & AT91_TWI_RXRDY) {
-			dev_err(dev->dev, "RXRDY still set!");
-			at91_twi_read(dev, AT91_TWI_RHR);
-		}
 
 		/* if only one byte is to be read, immediately stop transfer */
 		if (dev->buf_len <= 1 && !(dev->msg->flags & I2C_M_RECV_LEN))
