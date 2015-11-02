@@ -221,7 +221,12 @@ int xen_pcibk_enable_msix(struct xen_pcibk_device *pdev,
 	if (dev->msix_enabled)
 		return -EALREADY;
 
-	if (dev->msi_enabled)
+	/*
+	 * PCI_COMMAND_MEMORY must be enabled, otherwise we may not be able
+	 * to access the BARs where the MSI-X entries reside.
+	 */
+	pci_read_config_word(dev, PCI_COMMAND, &cmd);
+	if (dev->msi_enabled || !(cmd & PCI_COMMAND_MEMORY))
 		return -ENXIO;
 
 	if (dev->msix_enabled)
