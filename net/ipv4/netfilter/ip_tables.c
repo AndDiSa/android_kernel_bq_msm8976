@@ -568,15 +568,6 @@ static void cleanup_match(struct xt_entry_match *m, struct net *net)
 }
 
 static int
-check_entry(const struct ipt_entry *e)
-{
-	if (!ip_checkentry(&e->ip))
-		return -EINVAL;
-
-	return xt_check_entry_offsets(e, e->target_offset, e->next_offset);
-}
-
-static int
 check_match(struct xt_entry_match *m, struct xt_mtchk_param *par)
 {
 	const struct ipt_ip *ip = par->entryinfo;
