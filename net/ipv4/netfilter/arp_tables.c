@@ -1323,6 +1323,9 @@ static int translate_compat_table(struct xt_table_info **pinfo,
 	xt_entry_foreach(iter0, entry0, compatr->size)
 		compat_copy_entry_from_user(iter0, &pos, &size,
 					    newinfo, entry1);
+
+	/* all module references in entry0 are now gone */
+
 	xt_compat_flush_offsets(NFPROTO_ARP);
 	xt_compat_unlock(NFPROTO_ARP);
 
