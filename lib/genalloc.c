@@ -310,6 +310,7 @@ u64 gen_pool_alloc_aligned(struct gen_pool *pool, size_t size,
 			continue;
 		chunk_len = chunk_size(chunk) >> order;
 
+		start_bit = 0;
 retry:
 		start_bit = bitmap_find_next_zero_area_off(chunk->bits, chunk_len,
 						   0, nbits, align_mask,
