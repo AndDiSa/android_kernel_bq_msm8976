@@ -515,8 +515,7 @@ void __ip_select_ident(struct iphdr *iph, int segs)
 }
 EXPORT_SYMBOL(__ip_select_ident);
 
-static void __build_flow_key(const struct net *net, struct flowi4 *fl4,
-			     const struct sock *sk,
+static void __build_flow_key(struct flowi4 *fl4, const struct sock *sk,
 			     const struct iphdr *iph,
 			     int oif, u8 tos,
 			     u8 prot, u32 mark, int flow_flags)
@@ -532,21 +531,19 @@ static void __build_flow_key(const struct net *net, struct flowi4 *fl4,
 	flowi4_init_output(fl4, oif, mark, tos,
 			   RT_SCOPE_UNIVERSE, prot,
 			   flow_flags,
-			   iph->daddr, iph->saddr, 0, 0,
-			   sock_net_uid(net, sk));
+			   iph->daddr, iph->saddr, 0, 0);
 }
 
 static void build_skb_flow_key(struct flowi4 *fl4, const struct sk_buff *skb,
 			       const struct sock *sk)
 {
-	const struct net *net = dev_net(skb->dev);
 	const struct iphdr *iph = ip_hdr(skb);
 	int oif = skb->dev->ifindex;
 	u8 tos = RT_TOS(iph->tos);
 	u8 prot = iph->protocol;
 	u32 mark = skb->mark;
 
-	__build_flow_key(net, fl4, sk, iph, oif, tos, prot, mark, 0);
+	__build_flow_key(fl4, sk, iph, oif, tos, prot, mark, 0);
 }
 
 static void build_sk_flow_key(struct flowi4 *fl4, const struct sock *sk)
@@ -563,7 +560,7 @@ static void build_sk_flow_key(struct flowi4 *fl4, const struct sock *sk)
 			   RT_CONN_FLAGS(sk), RT_SCOPE_UNIVERSE,
 			   inet->hdrincl ? IPPROTO_RAW : sk->sk_protocol,
 			   inet_sk_flowi_flags(sk),
-			   daddr, inet->inet_saddr, 0, 0, sk->sk_uid);
+			   daddr, inet->inet_saddr, 0, 0);
 	rcu_read_unlock();
 }
 
@@ -2334,11 +2331,6 @@ static int rt_fill_info(struct net *net,  __be32 dst, __be32 src,
 
 	if (fl4->flowi4_mark &&
 	    nla_put_u32(skb, RTA_MARK, fl4->flowi4_mark))
-		goto nla_put_failure;
-
-	if (!uid_eq(fl4->flowi4_uid, INVALID_UID) &&
-	    nla_put_u32(skb, RTA_UID,
-			from_kuid_munged(current_user_ns(), fl4->flowi4_uid)))
 		goto nla_put_failure;
 
 	error = rt->dst.error;
