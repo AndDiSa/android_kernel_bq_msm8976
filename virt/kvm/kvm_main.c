@@ -2970,6 +2970,11 @@ void kvm_io_bus_unregister_dev(struct kvm *kvm, enum kvm_bus bus_idx,
 	struct kvm_io_bus *new_bus, *bus;
 
 	bus = kvm->buses[bus_idx];
+
+	/*
+	 * It's possible the bus being released before hand. If so,
+	 * we're done here.
+	 */
 	if (!bus)
 		return;
 
