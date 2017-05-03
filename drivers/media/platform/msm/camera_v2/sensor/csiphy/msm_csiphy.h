@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2016, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2011-2014, 2017 The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -142,7 +142,11 @@ struct csiphy_device {
 	struct platform_device *pdev;
 	struct msm_sd_subdev msm_sd;
 	struct v4l2_subdev subdev;
+	struct resource *mem;
+	struct resource *clk_mux_mem;
 	struct resource *irq;
+	struct resource *io;
+	struct resource *clk_mux_io;
 	void __iomem *base;
 	void __iomem *clk_mux_base;
 	struct mutex mutex;
