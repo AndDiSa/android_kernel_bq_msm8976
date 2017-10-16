@@ -47,6 +47,54 @@
 #define MAX_LANES                                   4
 #define CLOCK_OFFSET                              0x700
 #define CSIPHY_SOF_DEBUG_COUNT                      2
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include <linux/delay.h>
+#include <linux/clk.h>
+#include <linux/io.h>
+#include <linux/of.h>
+#include <linux/module.h>
+#include <linux/irqreturn.h>
+#include "msm_csiphy.h"
+#include "msm_sd.h"
+#include "include/msm_csiphy_2_0_hwreg.h"
+#include "include/msm_csiphy_2_2_hwreg.h"
+#include "include/msm_csiphy_3_0_hwreg.h"
+#include "include/msm_csiphy_3_1_hwreg.h"
+#include "include/msm_csiphy_3_2_hwreg.h"
+#include "include/msm_csiphy_3_4_2_hwreg.h"
+#include "include/msm_csiphy_3_5_hwreg.h"
+#include "cam_hw_ops.h"
+
+#define DBG_CSIPHY 0
+#define SOF_DEBUG_ENABLE 1
+#define SOF_DEBUG_DISABLE 0
+
+#define V4L2_IDENT_CSIPHY                        50003
+#define CSIPHY_VERSION_V22                        0x01
+#define CSIPHY_VERSION_V20                        0x00
+#define CSIPHY_VERSION_V30                        0x10
+#define CSIPHY_VERSION_V31                        0x31
+#define CSIPHY_VERSION_V32                        0x32
+#define CSIPHY_VERSION_V342                       0x342
+#define CSIPHY_VERSION_V35                        0x35
+#define MSM_CSIPHY_DRV_NAME                      "msm_csiphy"
+#define CLK_LANE_OFFSET                             1
+#define NUM_LANES_OFFSET                            4
+
+#define CSI_3PHASE_HW                               1
+#define MAX_LANES                                   4
+#define CLOCK_OFFSET                              0x700
+#define CSIPHY_SOF_DEBUG_COUNT                      2
 
 #undef CDBG
 #define CDBG(fmt, args...) pr_debug(fmt, ##args)
