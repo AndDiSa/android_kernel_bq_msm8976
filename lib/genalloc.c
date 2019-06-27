@@ -298,6 +298,14 @@ u64 gen_pool_alloc_aligned(struct gen_pool *pool, size_t size,
 	if (size == 0)
 		return 0;
 
+
+#ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
+	BUG_ON(in_nmi());
+#endif
+
+	if (size == 0)
+		return 0;
+
 	if (alignment_order > order)
 		align_mask = (1 << (alignment_order - order)) - 1;
 
@@ -310,6 +318,7 @@ u64 gen_pool_alloc_aligned(struct gen_pool *pool, size_t size,
 			continue;
 		chunk_len = chunk_size(chunk) >> order;
 
+		start_bit = 0;
 retry:
 		start_bit = bitmap_find_next_zero_area_off(chunk->bits, chunk_len,
 						   0, nbits, align_mask,
