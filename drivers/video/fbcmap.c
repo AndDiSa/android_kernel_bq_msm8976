@@ -210,7 +210,7 @@ int fb_cmap_to_user(const struct fb_cmap *from, struct fb_cmap_user *to)
 	if ((to->len <= tooff) || (from->len <= fromoff))
 		return -EINVAL;
 
-	size = to->len - tooff;
+	size = min_t(size_t, to->len - tooff, from->len - fromoff);
 
 	if (fromoff >= from->len || tooff >= to->len)
 		return -EINVAL;

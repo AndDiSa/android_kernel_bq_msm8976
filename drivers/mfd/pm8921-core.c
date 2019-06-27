@@ -954,17 +954,19 @@ static int pm8921_remove(struct platform_device *pdev)
 	if (pmic) {
 		if (pmic->dev)
 			mfd_remove_devices(pmic->dev);
-		if (pmic->irq_chip)
+		if (pmic->irq_chip) {
 			pm8xxx_irq_exit(pmic->irq_chip);
+			pmic->irq_chip = NULL;
+		}
 		if (pmic->mfd_regulators) {
 			for (i = 0; i < ARRAY_SIZE(regulator_data); i++)
 				mutex_destroy(&regulator_data[i].pc_lock);
 			for (i = 0; i < ARRAY_SIZE(pm8917_regulator_data); i++)
 				mutex_destroy(
 					&pm8917_regulator_data[i].pc_lock);
+			kfree(pmic->mfd_regulators);
+			kfree(pmic->regulator_cdata);
 		}
-		kfree(pmic->mfd_regulators);
-		kfree(pmic->regulator_cdata);
 		kfree(pmic);
 	}
 	platform_set_drvdata(pdev, NULL);
