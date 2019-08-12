@@ -93,6 +93,14 @@ static void wake_up_hotplug_thread(struct cpu_data *state);
 static void add_to_pending_lru(struct cpu_data *state);
 static void update_lru(struct cpu_data *state);
 
+#ifdef CONFIG_CLUSTER_PLUG
+/* ======================= clusterplug interface ======================= */
+bool is_clusterplug_enabled(void);
+#else
+bool is_clusterplug_enabled(void) {
+	return false;
+}
+#endif
 /* ========================= sysfs interface =========================== */
 
 static ssize_t store_min_cpus(struct cpu_data *state,
