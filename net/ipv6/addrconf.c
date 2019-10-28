@@ -1711,9 +1711,6 @@ void addrconf_dad_failure(struct inet6_ifaddr *ifp)
 
 	addrconf_mod_dad_work(ifp, 0);
 	in6_ifa_put(ifp);
-
-	addrconf_mod_dad_work(ifp, 0);
-	in6_ifa_put(ifp);
 }
 
 /* Join to solicited addr multicast group.
