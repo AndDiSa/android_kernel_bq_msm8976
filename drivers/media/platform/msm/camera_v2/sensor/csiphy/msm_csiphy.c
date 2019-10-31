@@ -47,6 +47,7 @@
 #define MAX_LANES                                   4
 #define CLOCK_OFFSET                              0x700
 #define CSIPHY_SOF_DEBUG_COUNT                      2
+/*
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
